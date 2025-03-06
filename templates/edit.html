@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Edit Task</h1>
+    </header>
+    <div class="container">
+        <form action="/update" method="POST" class="edit-form">
+            <input type="hidden" name="id" value="{{.ID}}">
+            <input type="text" name="title" value="{{.Title}}" required placeholder="Task Title">
+            <textarea name="description" placeholder="Task Description">{{.Description}}</textarea>
+            <textarea name="notes" placeholder="Additional Notes">{{.Notes}}</textarea>
+            <input type="datetime-local" name="due_date" value="{{.DueDate}}">
+            <select name="status">
+                <option value="pending" {{if eq .Status "pending"}}selected{{end}}>Pending</option>
+                <option value="in-progress" {{if eq .Status "in-progress"}}selected{{end}}>In Progress</option>
+                <option value="completed" {{if eq .Status "completed"}}selected{{end}}>Completed</option>
+            </select>
+            <button type="submit">Update Task</button>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2024 TaskMaster. Streamlining your tasks, simplifying your life.</p>
+    </footer>
+</body>
+</html>
