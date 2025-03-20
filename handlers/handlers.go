@@ -17,8 +17,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// RegisterHandler handles user registration
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+// Register handles user registration
+func UserRegister(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
@@ -51,8 +51,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-// LoginHandler handles user login
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+// UserLogin handles user login
+func UserLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
@@ -86,7 +86,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ProfileHandler handles profile creation/update
-func ProfileHandler(w http.ResponseWriter, r *http.Request) {
+func UserProfile(w http.ResponseWriter, r *http.Request) {
 	userID, err := getUserIDFromCookie(r)
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -164,7 +164,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	sortBy := r.URL.Query().Get("sort")   // e.g., "due_date"
 	filter := r.URL.Query().Get("filter") // e.g., "pending"
 
-	query := "SELECT id, title, description, notes, due_date, status FROM todos"
+	query := "SELECT id, title, description, notes, due_date, status FROM todos ORDER BY due_date ASC"
 	if filter != "" {
 		query += " AND status = '" + filter + "'"
 	}
@@ -191,7 +191,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // CreateHandler handles creating a new todo
-func CreateHandler(w http.ResponseWriter, r *http.Request) {
+func CreateTask(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		title := r.FormValue("title")
 		description := r.FormValue("description")
@@ -206,14 +206,14 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Schedule a reminder
-		scheduleReminder(title, dueDate)
+		taskReminder(title, dueDate)
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
 // DeleteHandler handles deleting a todo
-func DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	_, err := db.DB.Exec("DELETE FROM todos WHERE id = ?", id)
 	if err != nil {
@@ -224,7 +224,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // scheduleReminder triggers a reminder notification
-func scheduleReminder(taskTitle, dueDateStr string) {
+func taskReminder(taskTitle, dueDateStr string) {
 	dueTime, err := time.Parse("2006-01-02T15:04", dueDateStr)
 	if err != nil {
 		return
@@ -239,7 +239,7 @@ func scheduleReminder(taskTitle, dueDateStr string) {
 }
 
 // UpdateHandler for editing tasks
-func UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		id := r.FormValue("id")
 		title := r.FormValue("title")
@@ -248,7 +248,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		dueDate := r.FormValue("due_date")
 		status := r.FormValue("status")
 
-		_, err := db.DB.Exec("UPDATE todos SET title=?, description=?, due_date=?, status=? WHERE id=?", title, description, notes, dueDate, status, id)
+		_, err := db.DB.Exec("UPDATE todos SET title=?, description=?, notes=?, due_date=?, status=? WHERE id=?", title, description, notes, dueDate, status, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -257,7 +257,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func EditHandler(w http.ResponseWriter, r *http.Request) {
+func EditTask(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	var todo models.Todo
@@ -273,7 +273,7 @@ func EditHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // CompleteHandler handles marking a todo as completed
-func CompleteHandler(w http.ResponseWriter, r *http.Request) {
+func CompleteTask(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	var todo models.Todo
@@ -301,8 +301,8 @@ func CompleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // CompletedTasksHandler displays completed tasks
-func CompletedTasksHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.DB.Query("SELECT id, title, description, notes, due_date, completed_at FROM completed_todos")
+func CompletedTasks(w http.ResponseWriter, r *http.Request) {
+	rows, err := db.DB.Query("SELECT id, title, description, notes, due_date, completed_at FROM completed_todos ORDER BY completed_at DESC")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
