@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,6 +37,52 @@
         </ul>
     </div>
     <footer>
+        <p>&copy; 2024 TaskMaster. Streamlining your tasks, simplifying your life.</p>
+    </footer>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Organize Your Day</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>TaskMaster</h1>
+        <p>Your simple and effective task management app.</p>
+    </header>
+    <div class="container">
+        <form action="/create" method="POST" class="todo-form">
+            <input type="text" name="title" placeholder="Task Title" required>
+            <textarea name="description" placeholder="Task Description" required></textarea>
+            <textarea name="notes" placeholder="Additional Notes"></textarea>
+            <input type="datetime-local" name="due_date" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <ul class="todo-list">
+            {{range .}}
+            <li>
+                <div class="task-info">
+                    <strong>{{.Title}}</strong>
+                    <p>{{.Description}}</p>
+                    <small>🕒 Due: {{.DueDate.Format "02 Jan 2006 15:04"}}</small>
+                    {{if .Notes}}<p><em>📌 Notes: {{.Notes}}</em></p>{{end}}
+                </div>
+                <div class="task-actions">
+                    <a href="/edit?id={{.ID}}" class="edit-btn">Edit</a>
+                    <a href="/delete?id={{.ID}}" class="delete-btn">Delete</a>
+                    <a href="/complete?id={{.ID}}" class="complete-btn">Complete</a>
+                </div>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+    <footer>
+        <a href="/completed_tasks">Completed Tasks</a>
         <p>&copy; 2024 TaskMaster. Streamlining your tasks, simplifying your life.</p>
     </footer>
 </body>

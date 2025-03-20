@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completed Tasks</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Completed Tasks</h1>
+    </header>
+    <div class="container">
+        <ul class="todo-list">
+            {{range .}}
+            <li>
+                <div class="task-info">
+                    <strong>{{.Title}}</strong>
+                    <p>{{.Description}}</p>
+                    <small>🕒 Due: {{.DueDate.Format "02 Jan 2006 15:04"}}</small><br>
+                    <small>✅ Completed At: {{.CompletedAt.Format "02 Jan 2006 15:04"}}</small>
+                    {{if .Notes}}<p><em>📌 Notes: {{.Notes}}</em></p>{{end}}
+                </div>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+    <footer>
+        <a href="/">Home</a>
+        <p>&copy; 2024 TaskMaster. Streamlining your tasks, simplifying your life.</p>
+    </footer>
+    <a href="/">Back to Tasks</a>
+</body>
+</html>

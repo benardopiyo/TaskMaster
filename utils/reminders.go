@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -29,10 +28,14 @@ func CheckReminders() {
 			continue
 		}
 
-		// If the task is due within the next hour
-		if dueDate.Sub(now) <= time.Hour {
-			fmt.Printf("Reminder: Task '%s' is due soon!\n", title)
-			SendEmail("benardopiyo13@gmail.com", title, dueDate) // Send email alert
+		// Calculate the time remaining until the due date
+		timeRemaining := dueDate.Sub(now)
+
+		// If the task is due within 3 days
+		if timeRemaining <= 3*24*time.Hour {
+			// Send an alert message to the user
+			log.Printf("Alert: Task '%s' is due in less than 3 days!\n", title)
+			// You can implement additional logic here to display the alert message on the index.html page
 		}
 	}
 }
