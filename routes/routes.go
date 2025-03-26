@@ -13,7 +13,7 @@ func Routes() {
 	http.HandleFunc("/login", handlers.UserLogin)
 
 	protectedMux := http.NewServeMux()
-	protectedMux.HandleFunc("/", handlers.IndexHandler)
+	protectedMux.HandleFunc("/", handlers.Dasboard)
 	protectedMux.HandleFunc("/create", handlers.CreateTask)
 	protectedMux.HandleFunc("/delete", handlers.DeleteTask)
 	protectedMux.HandleFunc("/update", handlers.UpdateTask)

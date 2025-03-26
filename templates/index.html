@@ -21,7 +21,7 @@
         </form>
         <ul class="todo-list">
             {{range .}}
-            <li>
+            <li class="task-item" data-due-date="{{.DueDate.Format "2006-01-02T15:04:05"}}">
                 <div class="task-info">
                     <strong>{{.Title}}</strong>
                     <p>{{.Description}}</p>
@@ -41,5 +41,6 @@
         <a href="/completed_tasks">Completed Tasks</a>
         <p>&copy; 2024 TaskMaster. Streamlining your tasks, simplifying your life.</p>
     </footer>
+    <script src="../static/script.js"></script>
 </body>
 </html>

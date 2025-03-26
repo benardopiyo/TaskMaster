@@ -2,20 +2,31 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"net/smtp"
 	"time"
 )
 
-// SendEmail sends a reminder email
-func SendEmail(to string, taskTitle string, dueDate time.Time) {
-	from := "benardopiyo13@gmail.com"
-	password := "benkopiyo"
+// Email Credentials
+const (
+	smtpHost     = "smtp.gmail.com"
+	smtpPort     = "587"
+	senderEmail  = "benardopiyo13@gmail.com"
+	senderPass   = "benkopiyo"
+)
 
-	msg := fmt.Sprintf("Subject: Task Reminder\n\nYour task '%s' is due at %s!", taskTitle, dueDate.Format("2006-01-02 15:04"))
-	auth := smtp.PlainAuth("", from, password, "omosh.opiyo22@gmail.com")
+// SendEmail sends an email reminder
+func SendEmail(to, taskTitle string, dueDate time.Time) {
+	auth := smtp.PlainAuth("", senderEmail, senderPass, smtpHost)
 
-	err := smtp.SendMail("omosh.opiyo22@gmail.com:587", auth, from, []string{to}, []byte(msg))
+	subject := "Subject: Task Reminder\n"
+	body := fmt.Sprintf("Your task '%s' is due on %s!\n", taskTitle, dueDate.Format("2006-01-02"))
+	msg := []byte(subject + "\n" + body)
+
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, senderEmail, []string{to}, msg)
 	if err != nil {
-		fmt.Println("Failed to send email:", err)
+		log.Println("❌ Failed to send email:", err)
+		return
 	}
+	log.Printf("✅ Reminder email sent to %s for task: %s\n", to, taskTitle)
 }

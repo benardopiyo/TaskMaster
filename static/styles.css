@@ -140,3 +140,13 @@ footer {
 footer p {
     margin: 0;
 }
+
+@keyframes blink {
+    0% { background-color: rgba(255, 0, 0, 0.5); }
+    50% { background-color: transparent; }
+    100% { background-color: rgba(255, 0, 0, 0.5); }
+}
+
+.blink {
+    animation: blink 30s infinite;
+}

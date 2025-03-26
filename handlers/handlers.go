@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"todo-app/db"
 	"todo-app/models"
@@ -160,7 +158,7 @@ func getUserIDFromCookie(r *http.Request) (int, error) {
 }
 
 // IndexHandler with sorting & filtering
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+func Dasboard(w http.ResponseWriter, r *http.Request) {
 	sortBy := r.URL.Query().Get("sort")   // e.g., "due_date"
 	filter := r.URL.Query().Get("filter") // e.g., "pending"
 
@@ -206,7 +204,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Schedule a reminder
-		taskReminder(title, dueDate)
+		// taskReminder(title, dueDate)
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
@@ -224,19 +222,19 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 }
 
 // scheduleReminder triggers a reminder notification
-func taskReminder(taskTitle, dueDateStr string) {
-	dueTime, err := time.Parse("2006-01-02T15:04", dueDateStr)
-	if err != nil {
-		return
-	}
+// func taskReminder(taskTitle, dueDateStr string) {
+// 	dueTime, err := time.Parse("2006-01-02T15:04", dueDateStr)
+// 	if err != nil {
+// 		return
+// 	}
 
-	delay := time.Until(dueTime)
-	if delay > 0 {
-		time.AfterFunc(delay, func() {
-			log.Printf("🔔 Reminder: Task '%s' is due now!", taskTitle)
-		})
-	}
-}
+// 	delay := time.Until(dueTime)
+// 	if delay > 0 {
+// 		time.AfterFunc(delay, func() {
+// 			log.Printf("🔔 Reminder: Task '%s' is due now!", taskTitle)
+// 		})
+// 	}
+// }
 
 // UpdateHandler for editing tasks
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
